@@ -62,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
                 mHandler.sendEmptyMessageDelayed(0,1000);
             }
         };
-
-        mHandler.sendEmptyMessageDelayed(0,1000);
+        Message msg = new Message();
+        mHandler.sendEmptyMessageDelayed(1,1000);
     }
 
     public void onTestAnimator(View view){

@@ -4,6 +4,7 @@ import android.os.Debug;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * 对frame进行监控，用于监控动画可能丢帧的情况，以及没有动画时疑似不正常的doFrame
@@ -19,36 +20,46 @@ public class FrameMonitor {
     private long mStartMsgTime;//looper 处理下一条message的开始时间
     private long mLastMsgEndTime = Long.MAX_VALUE;//looper 上一次处理message结束的时间
     private boolean mDump;//是否放弃帧数据统计
-    private ExplicitFrameMonitor mMonitor300;//监视300ms左右的短动画，前提是300ms连续动画
-    private ExplicitFrameMonitor mMonitor1000;//监视1s左右的长动画，前提是1s连续动画
-    private ImplicitFrameMonitor mMonitor5000;//没有动画时，监视隐藏动画绘制
-    private boolean isFirstFrame = true;
+    private ExplicitFrameMonitor mMonitorAnimShort300;//监视300ms左右的短动画，前提是300ms连续动画
+    private ExplicitFrameMonitor mMonitorAnimLong1000;//监视1s左右的长动画，前提是1s连续动画
+    private ImplicitFrameMonitor mMonitorStaticImplicit;//没有动画时，监视隐藏动画绘制
 
+    public FrameMonitor(){
+        if(mMonitorAnimShort300 == null){
+            mMonitorAnimShort300 = new ExplicitFrameMonitor(MONITOR_TIME_MILLIS_ANIM_SHORT);
+        }
+        if(mMonitorAnimLong1000 == null){
+            mMonitorAnimLong1000 = new ExplicitFrameMonitor(MONITOR_TIME_MILLIS_ANIM_LONG);
+        }
+        if(mMonitorStaticImplicit == null){
+            mMonitorStaticImplicit = new ImplicitFrameMonitor(MONITOR_TIME_MILLIS_ANIM_IMPLICIT);
+        }
+    }
     void startMessage(String x) {
+        Log.d(TAG,x);
         if(Debug.isDebuggerConnected()){
             return;
         }
-        if(mMonitor300 == null){
-            mMonitor300 = new ExplicitFrameMonitor(MONITOR_TIME_MILLIS_ANIM_SHORT);
+        if(mMonitorAnimShort300 == null){
+            mMonitorAnimShort300 = new ExplicitFrameMonitor(MONITOR_TIME_MILLIS_ANIM_SHORT);
         }
-        if(mMonitor1000 == null){
-            mMonitor1000 = new ExplicitFrameMonitor(MONITOR_TIME_MILLIS_ANIM_LONG);
+        if(mMonitorAnimLong1000 == null){
+            mMonitorAnimLong1000 = new ExplicitFrameMonitor(MONITOR_TIME_MILLIS_ANIM_LONG);
         }
-        if(mMonitor5000 == null){
-            mMonitor5000 = new ImplicitFrameMonitor(MONITOR_TIME_MILLIS_ANIM_IMPLICIT);
+        if(mMonitorStaticImplicit == null){
+            mMonitorStaticImplicit = new ImplicitFrameMonitor(MONITOR_TIME_MILLIS_ANIM_IMPLICIT);
         }
 
         //如果是属于Frame，开始监测
         if(isDrawFrame(x)){
             if(isDumped()){
-                isFirstFrame = true;
                 setDump(false);
-                mMonitor300.start();
-                mMonitor1000.start();
+                mMonitorAnimShort300.start();
+                mMonitorAnimLong1000.start();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {//一般滑动，3s之后动画停止，打开异常监控器
-                        mMonitor5000.start();
+                        mMonitorStaticImplicit.start();
                     }
                 },3000);
 
@@ -61,9 +72,7 @@ public class FrameMonitor {
         //等待下一次doframe绘制，重新启动动画监视器。如果在连续动画过程中，300ms或者1s时间fps小于45，发出卡顿警报
         long messageGap = mStartMsgTime - mLastMsgEndTime;
         if(messageGap > mUIThreadHeartBeatMaxIntervalThreshold){
-            if(isFirstFrame){
-                isFirstFrame = false;
-            }else if (!isDumped()){//未被丢弃
+            if (!isDumped()){//未被丢弃
                 dumpStatistics();
             }
         }
@@ -78,8 +87,8 @@ public class FrameMonitor {
     }
 
     private void dumpStatistics() {
-        mMonitor300.stop();
-        mMonitor1000.stop();
+        mMonitorAnimShort300.stop();
+        mMonitorAnimLong1000.stop();
         setDump(true);
     }
 
@@ -99,23 +108,23 @@ public class FrameMonitor {
         if(!isDumped()){
             if(isDrawFrame(x)){
                 //绘制总帧数
-                mMonitor300.appendFrameCount();
-                mMonitor1000.appendFrameCount();
+                mMonitorAnimShort300.appendFrameCount();
+                mMonitorAnimLong1000.appendFrameCount();
             }
 
             //检查监控时间是否超过预设值
-            mMonitor300.checkIfStop();
-            mMonitor1000.checkIfStop();
+            mMonitorAnimShort300.check();
+            mMonitorAnimLong1000.check();
         }
 
         if(isDrawFrame(x)){
             //绘制Frame总数
-            mMonitor5000.appendFrameCount();
+            mMonitorStaticImplicit.appendFrameCount();
         }else{
             //绘制非Frame总数
-            mMonitor5000.appendNotFrameCount();
+            mMonitorStaticImplicit.appendNotFrameCount();
         }
-        mMonitor5000.checkIfStop();
+        mMonitorStaticImplicit.check();
         //记录一条message处理结束的时间戳
         mLastMsgEndTime = SystemClock.elapsedRealtime();
     }

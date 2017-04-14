@@ -25,9 +25,9 @@ public class ImplicitFrameMonitor extends AbsMonitor{
         }
         mMessageStringBuilder.setLength(0);
         mMessageStringBuilder.append("--------").append(" totalMonitorTime:").append(mTotalMonitorTime);
-        if(mTotalMessageCount >= MINIMUM_COUNT_THRESHOLD){//异常message超过5条
+        if(mTotalNotFrameCount >= MINIMUM_COUNT_THRESHOLD){//异常message超过5条
             mMessageStringBuilder.append(" messageCount=")
-                    .append(mTotalMessageCount).append(" handler is running");
+                    .append(mTotalNotFrameCount).append(" handler is running");
             Log.e(TAG, mMessageStringBuilder.toString());
         }
         mMessageStringBuilder.setLength(0);
@@ -42,7 +42,7 @@ public class ImplicitFrameMonitor extends AbsMonitor{
 
     public void appendNotFrameCount() {
         if(mStarted){
-            mTotalMessageCount++;
+            mTotalNotFrameCount++;
         }
     }
 }

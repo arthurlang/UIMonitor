@@ -21,9 +21,13 @@ public class ExplicitFrameMonitor extends AbsMonitor {
     @Override
     protected void process() {
 
-        mMessageStringBuilder.setLength(0);
+        if(mMessageStringBuilder == null){
+            mMessageStringBuilder = new StringBuilder();
+        }else{
+            mMessageStringBuilder.setLength(0);//清空StringBuffer
+        }
         mMessageStringBuilder.append(" fps=")
-                .append(mFps)
+                .append(calculateFps())
                 .append(" frameCount:")
                 .append(mTotalFrameCount)
                 .append(" totalMonitorTime:")
@@ -38,6 +42,14 @@ public class ExplicitFrameMonitor extends AbsMonitor {
                 Log.e(TAG, "--------block (<"+DEFAULT_FPS_THRESHOLD+")" + mMessageStringBuilder.toString() + "   short animation");
             }
         }
+    }
+
+    private int calculateFps() {
+        mFps = (int) (mTotalFrameCount / (mTotalMonitorTime / (1000*1.0f)));
+        if(mFps > 60){//修复扩大过程中的误差
+            mFps = 60;
+        }
+        return mFps;
     }
 
     private boolean isBlock() {
