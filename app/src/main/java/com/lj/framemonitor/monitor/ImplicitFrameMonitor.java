@@ -35,9 +35,13 @@ public class ImplicitFrameMonitor extends AbsMonitor{
             mMessageStringBuilder.append("--------").append(" totalMonitorTime:").append(mTotalMonitorTime).append(" frameCount:")
                     .append(mTotalFrameCount)
                     .append("frame is doing");
-
             Log.e(TAG, mMessageStringBuilder.toString());
         }
+
+        //附上stackTrace(),找到调用的activity
+        StackTraceElement[] trace =  Thread.currentThread().getStackTrace();
+        for (StackTraceElement traceElement : trace)
+            mMessageStringBuilder.append("\tat " + traceElement);
     }
 
     public void appendNotFrameCount() {
