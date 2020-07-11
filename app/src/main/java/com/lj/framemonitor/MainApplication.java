@@ -16,7 +16,7 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        UIThreadMonitor.sMultiThread = false;//todo 未解决bug
         UIThreadMonitor.openMonitor();
     }
 }
