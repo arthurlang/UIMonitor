@@ -5,12 +5,8 @@ package com.lj.framemonitor.monitor;
  * Created by langjian on 2017/3/27.
  * Version
  */
-
 public abstract class AbsMonitor {
-    //经验值，一般来讲，45帧不会卡顿(泡泡项目中，使用35帧更合理)
-    protected static final long DEFAULT_FPS_THRESHOLD = 35;
-    //经验值，小于5帧时，则任务不是动画
-    protected static final long DEFAULT_MIN_FPS_THRESHOLD = 5;
+
     //处理的非帧message数量
     protected int mTotalNotFrameCount;
     //帧总数

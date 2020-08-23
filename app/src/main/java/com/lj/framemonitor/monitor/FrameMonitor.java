@@ -6,16 +6,14 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
+import static com.lj.framemonitor.util.Constant.*;
+
 /**
  * 对frame进行监控，用于监控动画可能丢帧的情况，以及没有动画时疑似不正常的doFrame
  */
 
 public class FrameMonitor {
     private static final String TAG = "FrameMonitor";
-    public static final int MONITOR_TIME_MILLIS_ANIM_SHORT = 300;//默认持续检测动画时间阈值
-    public static final int MONITOR_TIME_MILLIS_ANIM_LONG = 1000;//默认持续检测动画时间阈值
-    public static final int MONITOR_TIME_MILLIS_ANIM_IMPLICIT = 5000;//默认持续检测动画时间阈值
-    private static final int DEFAULT_UI_THREAD_HEARTBEAT_INTERVAL_THRESHOLD_MILLIS = 150;//UI线程消息队列处理两个message之间的间隔时间默认阈值
     private int mUIThreadHeartBeatMaxIntervalThreshold = DEFAULT_UI_THREAD_HEARTBEAT_INTERVAL_THRESHOLD_MILLIS;
     private long mStartMsgTime;//looper 处理下一条message的开始时间
     private long mLastMsgEndTime = Long.MAX_VALUE;//looper 上一次处理message结束的时间

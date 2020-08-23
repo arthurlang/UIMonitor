@@ -1,10 +1,10 @@
 package com.lj.framemonitor.monitor;
 
-
-import static com.lj.framemonitor.monitor.FrameMonitor.MONITOR_TIME_MILLIS_ANIM_LONG;
-import static com.lj.framemonitor.monitor.FrameMonitor.MONITOR_TIME_MILLIS_ANIM_SHORT;
-
 import android.util.Log;
+
+import static com.lj.framemonitor.util.Config.DEFAULT_FPS_THRESHOLD;
+import static com.lj.framemonitor.util.Config.DEFAULT_MIN_FPS_THRESHOLD;
+import static com.lj.framemonitor.util.Constant.*;
 
 /**
  * Description 前端页面绘制正在绘制的动画是否卡顿
@@ -35,7 +35,7 @@ public class ExplicitFrameMonitor extends AbsMonitor {
 
         if(mCustomMonitorTimeThreshold == MONITOR_TIME_MILLIS_ANIM_LONG){//1000秒长动画
             if(isBlock()){
-                Log.e(TAG, "--------block (<"+DEFAULT_FPS_THRESHOLD+")" + mMessageStringBuilder.toString() + "  long animation");
+                Log.e(TAG, "--------block (<"+ DEFAULT_FPS_THRESHOLD+")" + mMessageStringBuilder.toString() + "  long animation");
             }
         }else if(mCustomMonitorTimeThreshold == MONITOR_TIME_MILLIS_ANIM_SHORT){//300秒短动画
             if(isBlock()){

@@ -1,4 +1,4 @@
-package com.lj.framemonitor;
+package com.lj.framemonitor.util;
 
 /**
  * Description
@@ -7,12 +7,8 @@ package com.lj.framemonitor;
  */
 public class MyLog {
 
+
     private static boolean sDebug = true;
-
-    MyLog() {
-        super();
-    }
-
 
     public static boolean isDebug() {
         return sDebug;

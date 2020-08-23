@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lj.framemonitor.R;
@@ -37,7 +38,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(MagicCategoryViewHolder holder, int position) {
         holder.textView.setText(mCategorys.get(position));
-
         //todo
 //        try {
 //            Thread.sleep(20);
@@ -52,7 +52,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return mCategorys == null ? 0 : mCategorys.size();
     }
 
-    class MagicCategoryViewHolder extends RecyclerView.ViewHolder{
+    public class MagicCategoryViewHolder extends RecyclerView.ViewHolder{
         TextView textView;
         public MagicCategoryViewHolder(View itemView) {
             super(itemView);

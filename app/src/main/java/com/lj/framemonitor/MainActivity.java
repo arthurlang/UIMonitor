@@ -1,5 +1,6 @@
 package com.lj.framemonitor;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,16 +11,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.lj.framemonitor.adapter.RecyclerViewAdapter;
-
+import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private Handler mHandler;
     private TextView mTextView;
@@ -37,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL_LIST));
         recyclerView.setAdapter(recyclerViewAdapter);
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             public long mStop;
             public long mStart;
@@ -56,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mHandler = new Handler(){
+        //test
+/*        mHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         Message msg = new Message();
-        mHandler.sendEmptyMessageDelayed(1,1000);
+        mHandler.sendEmptyMessageDelayed(1,1000);*/
     }
 
     public void onTestAnimator(View view){
